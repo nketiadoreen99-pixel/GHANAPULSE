@@ -21,7 +21,7 @@ const stats = [
   { label: "Subscribers", value: "8.4K", change: "+5.2%", icon: Users, color: "text-accent-orange" },
 ];
 
-type Tab = "overview" | "articles" | "create" | "comments";
+type Tab = "overview" | "articles" | "create" | "comments" | "social";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -33,6 +33,14 @@ export default function AdminDashboard() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [adminEmail, setAdminEmail] = useState("");
+  const [socialLinks, setSocialLinks] = useState({
+    twitter: "",
+    facebook: "",
+    instagram: "",
+    linkedin: "",
+    youtube: "",
+    tiktok: "",
+  });
 
   useEffect(() => {
     // Check if user is authenticated
@@ -68,6 +76,7 @@ export default function AdminDashboard() {
     { id: "articles", label: "Articles", icon: FileText },
     { id: "create", label: "Create", icon: Plus },
     { id: "comments", label: "Comments", icon: MessageSquare },
+    { id: "social", label: "Social Media", icon: Users },
   ];
 
   function handleCreateArticle(e: React.FormEvent) {
@@ -88,6 +97,19 @@ export default function AdminDashboard() {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  function handleSocialLinksUpdate(e: React.FormEvent) {
+    e.preventDefault();
+    alert("Social media links updated successfully!");
+    // Here you would save to Firebase
+  }
+
+  function handleSocialLinkChange(platform: string, value: string) {
+    setSocialLinks((prev) => ({
+      ...prev,
+      [platform]: value,
+    }));
   }
 
   return (
@@ -368,6 +390,104 @@ export default function AdminDashboard() {
                 <MessageSquare size={40} className="mx-auto text-text-tertiary/30 mb-3" />
                 <p className="text-sm text-text-tertiary">Comment moderation requires Firebase Firestore connection.</p>
                 <p className="text-xs text-text-tertiary mt-1">Connect your database to manage comments.</p>
+              </div>
+            </div>
+          )}
+
+          {/* Social Media */}
+          {activeTab === "social" && (
+            <div className="space-y-6">
+              <h1 className="text-xl font-bold text-text-primary dark:text-dark-text-primary">Social Media Links</h1>
+
+              <form onSubmit={handleSocialLinksUpdate} className="bg-surface dark:bg-dark-surface-secondary rounded-xl border border-border-light dark:border-dark-border p-6 space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary dark:text-dark-text-primary mb-1.5">Twitter</label>
+                    <input
+                      type="url"
+                      value={socialLinks.twitter}
+                      onChange={(e) => handleSocialLinkChange("twitter", e.target.value)}
+                      placeholder="https://twitter.com/yourhandle"
+                      className="w-full h-11 px-4 text-sm rounded-lg border border-border-light dark:border-dark-border bg-surface-secondary dark:bg-dark-surface-tertiary text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary dark:text-dark-text-primary mb-1.5">Facebook</label>
+                    <input
+                      type="url"
+                      value={socialLinks.facebook}
+                      onChange={(e) => handleSocialLinkChange("facebook", e.target.value)}
+                      placeholder="https://facebook.com/yourpage"
+                      className="w-full h-11 px-4 text-sm rounded-lg border border-border-light dark:border-dark-border bg-surface-secondary dark:bg-dark-surface-tertiary text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary dark:text-dark-text-primary mb-1.5">Instagram</label>
+                    <input
+                      type="url"
+                      value={socialLinks.instagram}
+                      onChange={(e) => handleSocialLinkChange("instagram", e.target.value)}
+                      placeholder="https://instagram.com/yourhandle"
+                      className="w-full h-11 px-4 text-sm rounded-lg border border-border-light dark:border-dark-border bg-surface-secondary dark:bg-dark-surface-tertiary text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary dark:text-dark-text-primary mb-1.5">LinkedIn</label>
+                    <input
+                      type="url"
+                      value={socialLinks.linkedin}
+                      onChange={(e) => handleSocialLinkChange("linkedin", e.target.value)}
+                      placeholder="https://linkedin.com/in/yourprofile"
+                      className="w-full h-11 px-4 text-sm rounded-lg border border-border-light dark:border-dark-border bg-surface-secondary dark:bg-dark-surface-tertiary text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary dark:text-dark-text-primary mb-1.5">YouTube</label>
+                    <input
+                      type="url"
+                      value={socialLinks.youtube}
+                      onChange={(e) => handleSocialLinkChange("youtube", e.target.value)}
+                      placeholder="https://youtube.com/@yourchannel"
+                      className="w-full h-11 px-4 text-sm rounded-lg border border-border-light dark:border-dark-border bg-surface-secondary dark:bg-dark-surface-tertiary text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary dark:text-dark-text-primary mb-1.5">TikTok</label>
+                    <input
+                      type="url"
+                      value={socialLinks.tiktok}
+                      onChange={(e) => handleSocialLinkChange("tiktok", e.target.value)}
+                      placeholder="https://tiktok.com/@yourhandle"
+                      className="w-full h-11 px-4 text-sm rounded-lg border border-border-light dark:border-dark-border bg-surface-secondary dark:bg-dark-surface-tertiary text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-light"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 text-sm font-semibold text-text-inverse gradient-primary rounded-lg hover:opacity-90 transition-opacity"
+                  >
+                    Save Social Links
+                  </button>
+                  <button
+                    type="button"
+                    className="px-6 py-2.5 text-sm font-medium text-text-secondary border border-border-light dark:border-dark-border rounded-lg hover:bg-surface-tertiary dark:hover:bg-dark-surface-tertiary transition-colors"
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </form>
+
+              <div className="bg-primary-50 dark:bg-dark-surface-tertiary rounded-xl border border-primary-200 dark:border-dark-border p-4">
+                <p className="text-sm text-text-primary dark:text-dark-text-primary">
+                  <span className="font-semibold">Tip:</span> Add your social media links here and they will be displayed on your admin profile for followers to connect with you.
+                </p>
               </div>
             </div>
           )}
