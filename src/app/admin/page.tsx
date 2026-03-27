@@ -26,6 +26,7 @@ export default function AdminDashboard() {
   const [newCategory, setNewCategory] = useState("news");
   const [newSummary, setNewSummary] = useState("");
   const [newContent, setNewContent] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
     { id: "overview", label: "Overview", icon: BarChart3 },
@@ -40,6 +41,18 @@ export default function AdminDashboard() {
     setNewTitle("");
     setNewSummary("");
     setNewContent("");
+    setUploadedImage(null);
+  }
+
+  function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setUploadedImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   return (
@@ -234,10 +247,26 @@ export default function AdminDashboard() {
 
                 <div>
                   <label className="block text-sm font-medium text-text-primary dark:text-dark-text-primary mb-1.5">Featured Image</label>
-                  <div className="border-2 border-dashed border-border-light dark:border-dark-border rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
-                    <ImageIcon size={32} className="mx-auto text-text-tertiary mb-2" />
-                    <p className="text-sm text-text-tertiary">Click to upload or drag and drop</p>
-                    <p className="text-xs text-text-tertiary mt-1">PNG, JPG up to 5MB</p>
+                  <div className="space-y-3">
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg"
+                      onChange={handleImageUpload}
+                      className="w-full px-4 py-2.5 text-sm rounded-lg border border-border-light dark:border-dark-border bg-surface-secondary dark:bg-dark-surface-tertiary text-text-primary dark:text-dark-text-primary focus:outline-none focus:ring-2 focus:ring-primary-light cursor-pointer"
+                    />
+                    <p className="text-xs text-text-tertiary">PNG, JPG up to 5MB</p>
+                    {uploadedImage && (
+                      <div className="relative w-full h-48 rounded-lg overflow-hidden border border-border-light dark:border-dark-border">
+                        <img src={uploadedImage} alt="Preview" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setUploadedImage(null)}
+                          className="absolute top-2 right-2 p-1.5 bg-accent-red text-text-inverse rounded-lg hover:opacity-90 transition-opacity"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
