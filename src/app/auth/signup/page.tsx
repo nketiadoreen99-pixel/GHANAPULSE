@@ -16,7 +16,7 @@ export default function SignupPage() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      alert("Signup functionality requires Supabase connection. Demo mode.");
+      alert("Signup functionality requires Firebase Authentication connection.");
     }, 1000);
   }
 

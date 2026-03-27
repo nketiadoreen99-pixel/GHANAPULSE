@@ -15,7 +15,7 @@ export default function LoginPage() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      alert("Login functionality requires Supabase connection. Demo mode.");
+      alert("Login functionality requires Firebase Authentication connection.");
     }, 1000);
   }
 

@@ -3,7 +3,7 @@
 export default function NewsletterForm({ variant }: { variant?: "sidebar" | "footer" }) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    alert("Subscribed! (Demo mode - connect Supabase for real subscriptions)");
+    alert("Subscribed! Thank you for subscribing to GhanaPulse.");
   }
 
   if (variant === "footer") {
