@@ -39,7 +39,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <meta name="theme-color" content="#1E40AF" />
+        <meta name="theme-color" content="#DC2626" />
       </head>
       <body className="min-h-full flex flex-col">
         <Navbar />
