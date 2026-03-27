@@ -72,7 +72,7 @@ export default function AdminDashboard() {
 
   function handleCreateArticle(e: React.FormEvent) {
     e.preventDefault();
-    alert("Article created (demo mode). Connect Supabase for persistence.");
+    alert("Article created successfully! Connect Firebase Firestore to save articles to database.");
     setNewTitle("");
     setNewSummary("");
     setNewContent("");
@@ -366,7 +366,7 @@ export default function AdminDashboard() {
               <h1 className="text-xl font-bold text-text-primary dark:text-dark-text-primary">Moderate Comments</h1>
               <div className="bg-surface dark:bg-dark-surface-secondary rounded-xl border border-border-light dark:border-dark-border p-8 text-center">
                 <MessageSquare size={40} className="mx-auto text-text-tertiary/30 mb-3" />
-                <p className="text-sm text-text-tertiary">Comment moderation requires Supabase connection.</p>
+                <p className="text-sm text-text-tertiary">Comment moderation requires Firebase Firestore connection.</p>
                 <p className="text-xs text-text-tertiary mt-1">Connect your database to manage comments.</p>
               </div>
             </div>
