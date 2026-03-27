@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   BarChart3, FileText, MessageSquare, Users, Eye, TrendingUp,
   Plus, Edit, Trash2, Settings, LogOut, ChevronRight, Search,
   Image as ImageIcon,
 } from "lucide-react";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 import { mockArticles } from "@/lib/mock-data";
 import { formatNumber, formatDate, getCategoryBadgeClass } from "@/lib/utils";
 import { CATEGORIES } from "@/types";
@@ -21,12 +24,44 @@ const stats = [
 type Tab = "overview" | "articles" | "create" | "comments";
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [newTitle, setNewTitle] = useState("");
   const [newCategory, setNewCategory] = useState("news");
   const [newSummary, setNewSummary] = useState("");
   const [newContent, setNewContent] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [adminEmail, setAdminEmail] = useState("");
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      const storedEmail = localStorage.getItem("adminEmail");
+      const isAdmin = localStorage.getItem("isAdmin");
+
+      if (user && storedEmail === "justicewalker09@gmail.com" && isAdmin === "true") {
+        setIsAuthenticated(true);
+        setAdminEmail(storedEmail);
+      } else {
+        setIsAuthenticated(false);
+        router.push("/admin/login");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  async function handleLogout() {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("adminEmail");
+      localStorage.removeItem("isAdmin");
+      router.push("/admin/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  }
 
   const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
     { id: "overview", label: "Overview", icon: BarChart3 },
@@ -57,6 +92,16 @@ export default function AdminDashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
+      {!isAuthenticated ? (
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center mx-auto mb-4">
+              <span className="text-text-inverse font-bold text-lg">G</span>
+            </div>
+            <p className="text-text-secondary dark:text-dark-text-secondary">Loading...</p>
+          </div>
+        </div>
+      ) : (
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar */}
         <aside className="lg:w-56 shrink-0">
@@ -92,9 +137,12 @@ export default function AdminDashboard() {
               <button className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-tertiary dark:text-dark-text-secondary dark:hover:bg-dark-surface-tertiary">
                 <Settings size={18} /> Settings
               </button>
-              <Link href="/" className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-text-secondary hover:text-text-primary rounded-lg hover:bg-surface-tertiary dark:text-dark-text-secondary dark:hover:bg-dark-surface-tertiary">
-                <LogOut size={18} /> Back to Site
-              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-accent-red hover:text-accent-red hover:bg-surface-tertiary dark:hover:bg-dark-surface-tertiary rounded-lg transition-colors"
+              >
+                <LogOut size={18} /> Logout
+              </button>
             </div>
           </div>
         </aside>
@@ -325,6 +373,7 @@ export default function AdminDashboard() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }
